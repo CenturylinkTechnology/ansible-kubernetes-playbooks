@@ -52,6 +52,14 @@
       set_fact:
         master_ip: "{{ item.ipaddress }}"
       with_items: new_inv_master.servers
+
+    - name: Update the stored cluster configuration.
+      kube_cluster_patch:
+        authorization: "{{ authorization }}"
+        account_alias: "{{ account_alias }}"
+        cluster_id: "{{ cluster_id }}"
+        patch:
+          master_ip: "{{ master_ip }}"
       
     - name: Publish kube cluster event.
       kube_cluster_event:
