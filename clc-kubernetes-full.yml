@@ -3,6 +3,7 @@
   
     - name: Publish kube cluster event.
       kube_cluster_event:
+        authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
         message: "Starting cluster provisioning operations."
@@ -54,6 +55,7 @@
       
     - name: Publish kube cluster event.
       kube_cluster_event:
+        authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
         message: "Master server instance created with IP {{ master_ip }}"
@@ -85,6 +87,13 @@
         apiserver_endpoint=http://{{ master_ip }}:8080
         groups=node
       with_items: new_inv_node.servers
+      
+    - name: Publish kube cluster event.
+      kube_cluster_event:
+        authorization: "{{ authorization }}"
+        account_alias: "{{ account_alias }}"
+        cluster_id: "{{ cluster_id }}"
+        message: "Node server instance(s) created."
     
     - name: Wait for SSH services be vailable on hosts.
       command: sleep 30
