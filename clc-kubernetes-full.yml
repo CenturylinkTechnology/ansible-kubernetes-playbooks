@@ -60,6 +60,8 @@
         cluster_id: "{{ cluster_id }}"
         patch:
           master_ip: "{{ master_ip }}"
+          master_ssh_user: "root"
+          master_ssh_pass: "{{ server_pass }}"
       
     - name: Publish kube cluster event.
       kube_cluster_event:
