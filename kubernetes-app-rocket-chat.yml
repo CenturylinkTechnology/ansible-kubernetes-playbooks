@@ -1,12 +1,12 @@
 - hosts: all
   tasks:
   
-  - name: Publish kube cluster event.
-    kube_cluster_event:
-      authorization: "{{ authorization }}"
-      account_alias: "{{ account_alias }}"
-      cluster_id: "{{ cluster_id }}"
-      message: "Starting {{ application_name }} deployment."
+#  - name: Publish kube cluster event.
+#    kube_cluster_event:
+#      authorization: "{{ authorization }}"
+#      account_alias: "{{ account_alias }}"
+#      cluster_id: "{{ cluster_id }}"
+#      message: "Starting {{ application_name }} deployment."
   
   - name: Create Rocket Chat Replication Controller.
     kubernetes:
@@ -42,12 +42,12 @@
                 - containerPort: 3000
             restartPolicy: Always
             
-  - name: Publish kube cluster event.
-    kube_cluster_event:
-      authorization: "{{ authorization }}"
-      account_alias: "{{ account_alias }}"
-      cluster_id: "{{ cluster_id }}"
-      message: "{{ application_name }} replication controller created."
+#  - name: Publish kube cluster event.
+#    kube_cluster_event:
+#      authorization: "{{ authorization }}"
+#      account_alias: "{{ account_alias }}"
+#      cluster_id: "{{ cluster_id }}"
+#      message: "{{ application_name }} replication controller created."
             
   - name: Create Rocket Chat Service
     kubernetes:
@@ -73,10 +73,10 @@
             
   - debug: msg={{ service_resp }}
             
-  - name: Publish kube cluster event.
-    kube_cluster_event:
-      authorization: "{{ authorization }}"
-      account_alias: "{{ account_alias }}"
-      cluster_id: "{{ cluster_id }}"
-      message: "{{ application_name }} service created."
+#  - name: Publish kube cluster event.
+#    kube_cluster_event:
+#      authorization: "{{ authorization }}"
+#      account_alias: "{{ account_alias }}"
+#      cluster_id: "{{ cluster_id }}"
+#      message: "{{ application_name }} service created."
 
