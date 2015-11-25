@@ -1,5 +1,13 @@
-- hosts: master
+- hosts: all
   tasks:
+  
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "Starting {{ application_name }} deployment."
+  
   - name: Create Rocket Chat Replication Controller.
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
@@ -8,17 +16,17 @@
         apiVersion: v1
         kind: ReplicationController
         metadata:
-          name: "rocket-chat-rc"
+          name: "{{ application_name }}-rc"
           namespace: default
         spec:
           replicas: 1
           imagePullPolicy: IfNotPresent
           selector:
-            app: "rocket-chat"
+            app: "{{ application_name }}"
           template:
             metadata:
               labels:
-                app: "rocket-chat"
+                app: "{{ application_name }}"
             spec:
               containers:
               - name: "mongo"
@@ -34,6 +42,13 @@
                 - containerPort: 3000
             restartPolicy: Always
             
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "{{ application_name }} replication controller created."
+            
   - name: Create Rocket Chat Service
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
@@ -42,16 +57,26 @@
         apiVersion: v1
         kind: Service
         metadata:
-          name: "rocket-chat-svc"
+          name: "{{ application_name }}-svc"
           namespace: default
           labels:
-            app: "rocket-chat"
+            app: "{{ application_name }}"
         spec:
           type: NodePort
           ports:
           - port: 8080
             targetPort: 3000
             protocol: TCP
-            nodePort: 30180
           selector:
-            app: "rocket-chat"
+            app: "{{ application_name }}"
+    register: service_resp
+            
+  - debug: msg={{ service_resp }}
+            
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "{{ application_name }} service created."
+

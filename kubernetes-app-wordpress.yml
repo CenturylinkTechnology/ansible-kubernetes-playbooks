@@ -6,7 +6,7 @@
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
-      message: "Starting application deployment."
+      message: "Starting {{ application_name }} deployment."
   
   - name: Create Wordpress Replication Controller.
     kubernetes:
@@ -52,7 +52,7 @@
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
-      message: "{{ application_name }} wordpress replication controller created."
+      message: "{{ application_name }} replication controller created."
             
   - name: Create Wordpress Service
     kubernetes:
@@ -83,4 +83,4 @@
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
-      message: "{{ application_name }} wordpress service created."
+      message: "{{ application_name }} service created."
