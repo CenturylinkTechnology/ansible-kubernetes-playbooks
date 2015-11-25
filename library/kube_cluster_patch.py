@@ -31,7 +31,7 @@ def main():
     h = httplib2.Http()
 
     response, content = h.request(endpoint + '/kube/' + account_alias +
-            '/' + cluster_id, method='PATCH', body=json.dumps({'patch' : patch}), 
+            '/' + cluster_id, method='PATCH', body=json.dumps(patch), 
             headers={'Authorization' :  authorization, 'Content-Type' : 'application/json'})
 
     if response.status != 200:
