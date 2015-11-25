@@ -74,6 +74,9 @@
             protocol: TCP
           selector:
             app: "{{ application_name }}"
+    register: service_resp
+            
+  - debug: msg={{ service_resp }}
             
   - name: Publish kube cluster event.
     kube_cluster_event:
