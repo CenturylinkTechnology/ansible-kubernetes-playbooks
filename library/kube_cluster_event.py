@@ -38,7 +38,7 @@ def main():
         
         module.fail_json(changed=False, msg=response)
 
-    module.exit_json(changed=True, content=json.loads(content))
+    module.exit_json(changed=True, content=content)
 
 
 from ansible.module_utils.basic import *
