@@ -69,7 +69,7 @@ def main():
             if response.status >= 400:
                 module.fail_json(changed=False, msg='Failed to delete ' + kind)
             else:
-                module.exit_json(changed=True, content=content)
+                module.exit_json(changed=True, content=json.loads(content))
 
         if 'present' == state.lower() :
                 
@@ -87,11 +87,11 @@ def main():
             if response.status >= 400:
                 module.fail_json(changed=False, msg='Failed to update ' + kind + ' ' + content)
             else:
-                module.exit_json(changed=True, content=content)
+                module.exit_json(changed=True, content=json.loads(content))
 
         else:
 
-            module.exit_json(changed=False, content=content)
+            module.exit_json(changed=False, content=json.loads(content))
 
 # import module snippets
 from ansible.module_utils.basic import *

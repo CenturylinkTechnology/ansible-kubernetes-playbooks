@@ -1,13 +1,15 @@
-- hosts: all
+- hosts: localhost
+  connection: local
   tasks:
-  
-#  - name: Publish kube cluster event.
-#    kube_cluster_event:
-#      authorization: "{{ authorization }}"
-#      account_alias: "{{ account_alias }}"
-#      cluster_id: "{{ cluster_id }}"
-#      message: "Starting {{ application_name }} deployment."
-  
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "Starting {{ application_name }} deployment."
+
+- hosts: all  
+  tasks: 
   - name: Create Rocket Chat Replication Controller.
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
@@ -42,13 +44,18 @@
                 - containerPort: 3000
             restartPolicy: Always
             
-#  - name: Publish kube cluster event.
-#    kube_cluster_event:
-#      authorization: "{{ authorization }}"
-#      account_alias: "{{ account_alias }}"
-#      cluster_id: "{{ cluster_id }}"
-#      message: "{{ application_name }} replication controller created."
-            
+- hosts: localhost
+  connection: local
+  tasks:
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "{{ application_name }} replication controller created."
+
+- hosts: all  
+  tasks: 
   - name: Create Rocket Chat Service
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
@@ -73,10 +80,12 @@
             
   - debug: msg={{ service_resp }}
             
-#  - name: Publish kube cluster event.
-#    kube_cluster_event:
-#      authorization: "{{ authorization }}"
-#      account_alias: "{{ account_alias }}"
-#      cluster_id: "{{ cluster_id }}"
-#      message: "{{ application_name }} service created."
-
+- hosts: localhost
+  connection: local
+  tasks:
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "{{ application_name }} service created."

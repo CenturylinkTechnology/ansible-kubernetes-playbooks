@@ -16,7 +16,8 @@ def main():
             authorization = dict(required=True),
             account_alias = dict(required=True),
             cluster_id = dict(required=True),
-            message = dict(required=True)
+            cluster_app_id = dict(required=True),
+            patch = dict(required=True)
         )
     )
 
@@ -27,14 +28,15 @@ def main():
     authorization = module.params['authorization']
     account_alias = module.params['account_alias']
     cluster_id = module.params['cluster_id']
-    message = module.params['message']
+    cluster_app_id = module.params['cluster_app_id']
+    patch = module.params['patch']
     h = httplib2.Http()
 
     response, content = h.request(endpoint + '/kube/' + account_alias +
-            '/clusters/' + cluster_id + '/events', method='POST', body=json.dumps({'message' : message}), 
+            '/clusters/' + cluster_id + '/apps/' + cluster_app_id, method='PATCH', body=json.dumps(patch), 
             headers={'Authorization' :  authorization, 'Content-Type' : 'application/json'})
 
-    if response.status != 204:
+    if response.status != 200:
         
         module.fail_json(changed=False, msg=response)
 

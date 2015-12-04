@@ -39,7 +39,7 @@ def main():
         module.fail_json(changed=False, msg='Replication controller not found.')
             
     if response.status == 404 and not fail_fast:
-        module.exit_json(changed=False, content=content)
+        module.exit_json(changed=False, content=json.loads(content))
             
     model = json.loads(content)
     model['spec']['replicas'] = replicas
@@ -51,7 +51,7 @@ def main():
     if response.status >= 400 and fail_fast:
         module.fail_json(changed=False, msg='Failed to scale replication controller.')
 
-    module.exit_json(changed=True, content=content)
+    module.exit_json(changed=True, content=json.loads(content))
 
 # import module snippets
 from ansible.module_utils.basic import *
