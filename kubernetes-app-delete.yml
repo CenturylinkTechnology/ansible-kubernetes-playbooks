@@ -10,18 +10,12 @@
   
 - hosts: all  
   tasks:
-  - name: Scale Down Replication Controller.
-    kubernetes:
+  - name: Scale Up Job Pods
+    kubernetes-scale:
       endpoint: "{{ apiserver_endpoint }}"
-      state: present
-      model:
-        apiVersion: v1
-        kind: ReplicationController
-        metadata:
-          name: "{{ application_name }}-rc"
-          namespace: default
-        spec:
-          replicas: 0
+      name: "{{ application_name }}-rc"
+      namespace: default
+      replicas: 0
       
   - name: Remove Replication Controller.
     kubernetes:
