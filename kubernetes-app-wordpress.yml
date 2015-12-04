@@ -83,7 +83,8 @@
             app: "{{ application_name }}"
     register: service_resp
             
-  - debug: msg={{ service_resp }}
+  - set_fact:
+      node_port: "{{ service_resp.content.spec.ports[0].nodePort }}"
 
 - hosts: localhost
   connection: local
@@ -96,7 +97,7 @@
       cluster_id: "{{ cluster_id }}"
       cluster_app_id: "{{ cluster_app_id }}"
       patch:
-        node_port: "{{ service_resp.content.spec.ports[0].nodePort }}"
+        node_port: "{{ node_port }}"
    
   - name: Publish kube cluster event.
     kube_cluster_event:
