@@ -90,7 +90,7 @@
   tasks:           
   
   - name: Update the stored cluster app configuration.
-    kube_cluster_patch:
+    kube_cluster_app_patch:
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
