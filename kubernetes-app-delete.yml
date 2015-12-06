@@ -10,16 +10,7 @@
   
 - hosts: all  
   tasks:
-  - name: Ensure pip is installed
-    apt: name=python-pip state=present
-      
-  - name: Update Requests Version
-    pip: name=requests state=latest
-    
-  - name: Update pip Version
-    pip: name=pip state=latest
-  
-  - name: Scale Up Job Pods
+  - name: Scale Down Pods
     kubernetes-scale:
       endpoint: "{{ apiserver_endpoint }}"
       name: "{{ application_name }}-rc"
