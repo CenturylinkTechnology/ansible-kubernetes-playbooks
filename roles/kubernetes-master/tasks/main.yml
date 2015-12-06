@@ -28,3 +28,12 @@
 - name: Install httplib2.
   apt: name=python-httplib2 state=present
   
+- name: Ensure pip is installed
+  apt: name=python-pip state=present
+    
+- name: Update Requests Version
+  pip: name=requests state=latest
+  
+- name: Update pip Version
+  pip: name=pip state=latest
+  
