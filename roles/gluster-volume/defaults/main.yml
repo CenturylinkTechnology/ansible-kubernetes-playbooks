@@ -1,3 +1,4 @@
 volume_name: gv0
-volume_path: /gcfs/data
-gcfs_ip: 10.121.49.24
+volume_root: /gcfs
+volume_path: /data
+gcfs_ip: 127.0.0.1

@@ -1,0 +1,43 @@
+- hosts: localhost
+  tasks:
+    - name: Generate server root password
+      command: openssl rand -base64 15
+      register: server_pass
+    
+    - name: Set server password fact.
+      set_fact:
+        server_pass: "{{ server_pass.stdout }}"
+    
+    - name: Create new gcfs server for gluster deployment.
+      clc_server:
+        name: GCFS
+        location: "{{ datacenter }}"
+        template: centos-6-64
+        password: "{{ server_pass }}"
+        count: 1
+        group: "{{ group }}"
+        network_id: "{{ network_id }}"
+        cpu: 1
+        memory: 2
+        type: standard
+        storage_type: standard
+        additional_disks:
+        - sizeGB: 50
+          type: partitioned
+          path: /gcfs
+      register: gcfs_inv
+    
+    - name: Add new servers to in-memory inventory.
+      add_host:
+        name={{ item.name }}
+        ansible_ssh_host={{ item.ipaddress }}
+        ansible_ssh_user=root
+        ansible_ssh_pass={{ server_pass }}
+        gcfs_ip={{ item.ipaddress }}
+        groups=gcfs
+      with_items: gcfs_inv.servers
+      
+    - name: Wait for SSH services be vailable on hosts.
+      command: sleep 30
+
+- include: kubernetes-gcfs.yml hosts=gcfs

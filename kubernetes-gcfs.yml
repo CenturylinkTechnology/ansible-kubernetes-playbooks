@@ -1,4 +1,3 @@
-- hosts: all
+- hosts: gcfs
   roles:
-#    - gluster-server
-    - gluster-volume
+    - gluster-server
