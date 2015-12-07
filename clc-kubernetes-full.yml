@@ -98,6 +98,18 @@
         groups=node
       with_items: new_inv_node.servers
       
+    - name: Create node configuration documents.
+      kube_cluster_node_create:
+        authorization: "{{ authorization }}"
+        account_alias: "{{ account_alias }}"
+        cluster_id: "{{ cluster_id }}"
+        data:
+          name: "{{ item.name }}"
+          node_ip: "{{ item.ipaddress }}"
+          node_ssh_user: "root"
+          node_ssh_pass: "{{ server_pass }}"
+      with_items: new_inv_node.servers
+      
     - name: Publish kube cluster event.
       kube_cluster_event:
         authorization: "{{ authorization }}"
