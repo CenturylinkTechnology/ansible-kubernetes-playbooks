@@ -16,7 +16,8 @@ def main():
             authorization = dict(required=True),
             account_alias = dict(required=True),
             cluster_id = dict(required=True),
-            data = dict(required=True)
+            storage_id = dict(required=True),
+            patch = dict(required=True)
         )
     )
 
@@ -27,18 +28,19 @@ def main():
     authorization = module.params['authorization']
     account_alias = module.params['account_alias']
     cluster_id = module.params['cluster_id']
-    data = module.params['data']
+    storage_id = module.params['storage_id']
+    patch = module.params['patch']
     h = httplib2.Http()
 
     response, content = h.request(endpoint + '/kube/' + account_alias +
-            '/clusters/' + cluster_id + '/nodes', method='POST', body=json.dumps(data), 
+            '/clusters/' + cluster_id + '/storage/' + storage_id, method='PATCH', body=json.dumps(patch), 
             headers={'Authorization' :  authorization, 'Content-Type' : 'application/json'})
 
     if response.status != 200:
         
         module.fail_json(changed=False, msg=response)
 
-    module.exit_json(changed=True, content=content)
+    module.exit_json(changed=True, content=json.loads(content))
 
 
 from ansible.module_utils.basic import *
