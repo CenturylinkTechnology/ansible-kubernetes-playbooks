@@ -1,0 +1,3 @@
+volume_name: gv0
+volume_path: /gcfs/data
+gcfs_ip: 10.121.49.24

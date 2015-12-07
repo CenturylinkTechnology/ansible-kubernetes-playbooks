@@ -1,0 +1,20 @@
+- name: Ensure gcfs mount point exists.
+  file:
+    path: "{{ volume_path }}"
+    recurse: yes
+    state: directory
+    mode: 0775
+    
+- name: Gather gcfs volume facts.
+  shell: gluster volume info {{ volume_name }}
+  changed_when: false
+  ignore_errors: true
+  register: gluster_volume_info
+
+- name: Create gcfs volume if missing.
+  shell: "gluster volume create {{ volume_name }} {{ gcfs_ip }}:/{{ volume_path }}"
+  when: "'Volume Name: {{ volume_name }}' not in gluster_volume_info.stdout"
+  
+- name: Start gcfs volume.
+  shell: "gluster volume start {{ volume_name }}"
+  when: "'Volume Name: {{ volume_name }}' not in gluster_volume_info.stdout"
