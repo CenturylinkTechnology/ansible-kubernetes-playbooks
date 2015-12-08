@@ -48,7 +48,7 @@
     - name: Set playbook facts.
       set_fact:
         storage_ip: "{{ item.ipaddress }}"
-      with_items: new_inv_master.servers
+      with_items: gcfs_inv.servers
 
     - name: Update the stored cluster configuration.
       kube_cluster_patch:
