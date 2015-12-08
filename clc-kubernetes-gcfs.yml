@@ -51,7 +51,7 @@
       with_items: gcfs_inv.servers
 
     - name: Update the stored cluster configuration.
-      kube_cluster_patch:
+      kube_cluster_storage_patch:
         authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
