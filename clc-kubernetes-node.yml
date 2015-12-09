@@ -42,6 +42,11 @@
         groups=node
       with_items: new_inv.servers
 
+    - name: Set playbook facts.
+      set_fact:
+        node_ip: "{{ item.ipaddress }}"
+      with_items: new_inv.servers
+
     - name: Update node configuration document.
       kube_cluster_storage_patch:
         authorization: "{{ authorization }}"
@@ -49,7 +54,7 @@
         cluster_id: "{{ cluster_id }}"
         node_id: "{{ node_id }}"
         patch:
-          node_ip: "{{ item.ipaddress }}"
+          node_ip: "{{ node_ip }}"
           node_ssh_user: "root"
           node_ssh_pass: "{{ server_pass }}"
 
