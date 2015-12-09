@@ -48,7 +48,7 @@
       with_items: new_inv.servers
 
     - name: Update node configuration document.
-      kube_cluster_storage_patch:
+      kube_cluster_node_patch:
         authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
@@ -63,7 +63,7 @@
         authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
-        message: "Node node instance created."
+        message: "Node instance created."
 
     - name: Wait for SSH services be vailable on hosts.
       command: sleep 30
