@@ -31,7 +31,7 @@ def main():
     h = httplib2.Http()
 
     response, content = h.request(endpoint + '/kube/' + account_alias +
-            '/clusters/' + cluster_id + '/nodes', method='POST', body=json.dumps(data), 
+            '/clusters/' + cluster_id + '/nodes', method='PUT', body=json.dumps(data), 
             headers={'Authorization' :  authorization, 'Content-Type' : 'application/json'})
 
     if response.status != 200:
