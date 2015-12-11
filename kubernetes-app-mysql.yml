@@ -17,11 +17,10 @@
     register: storage
     
   - name: Fetch cluster configuration.
-    kube_cluster_patch:
+    kube_cluster_get:
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
-      patch:
     register: master
       
   - name: Add gcfs server to in-memory inventory.
