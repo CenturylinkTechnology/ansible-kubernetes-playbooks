@@ -15,6 +15,14 @@
       cluster_id: "{{ cluster_id }}"
       storage_id: "{{ storage_id }}"
     register: storage
+    
+  - name: Fetch cluster configuration.
+    kube_cluster_patch:
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      patch:
+    register: master
       
   - name: Add gcfs server to in-memory inventory.
     add_host:
@@ -27,6 +35,17 @@
       volume_path=/{{ application_name }}
       groups=gcfs
       
+  - name: Add master server to in-memory inventory.
+    add_host:
+      name={{ master.content.name }}
+      ansible_ssh_host={{ master.content.master_ip }}
+      ansible_ssh_user={{ master.content.master_ssh_user }}
+      ansible_ssh_pass={{ master.content.master_ssh_pass }}
+      gcfs_ip={{ storage.content.storage_ip }}
+      volume_name={{ application_name }}
+      volume_path=/{{ application_name }}
+      groups=master
+      
   - name: Publish kube cluster event.
     kube_cluster_event:
       authorization: "{{ authorization }}"
@@ -38,15 +57,8 @@
   roles:
     - gluster-volume
     
-- hosts: "all:!gcfs" 
+- hosts: "master" 
   tasks:
-  - name: Fetch storage configuration.
-    kube_cluster_storage_get:
-      authorization: "{{ authorization }}"
-      account_alias: "{{ account_alias }}"
-      cluster_id: "{{ cluster_id }}"
-      storage_id: "{{ storage_id }}"
-    register: storage
   
   - name: Create GCFS Endpoint
     kubernetes:
@@ -60,7 +72,7 @@
           namespace: default
         subsets:
           - addresses:
-            - ip: "{{ storage.content.storage_ip }}"
+            - ip: "{{ gcfs_ip }}"
             ports:
             - port: 24007
 
@@ -113,7 +125,7 @@
       cluster_id: "{{ cluster_id }}"
       message: "{{ application_name }} replication controller created."
 
-- hosts: "all:!gcfs"  
+- hosts: "master"  
   tasks: 
   - name: Create mysql Service
     kubernetes:
