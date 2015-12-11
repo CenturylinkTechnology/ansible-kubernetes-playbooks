@@ -29,7 +29,7 @@ def main():
     h = httplib2.Http()
 
     response, content = h.request(endpoint + '/kube/' + account_alias +
-            '/clusters/' + cluster_id, method='GET', body=json.dumps(patch), 
+            '/clusters/' + cluster_id, method='GET',  
             headers={'Authorization' :  authorization, 'Content-Type' : 'application/json'})
 
     if response.status != 200:
