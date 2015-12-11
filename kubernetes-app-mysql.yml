@@ -83,9 +83,18 @@
               labels:
                 app: "{{ application_name }}"
             spec:
+              volumes:
+              - name: msql-volume
+                glusterfs:
+                  endpoints: "{{ application_name }}"
+                  path: "{{ application_name }}"
+                  readOnly: false
               containers:
               - name: "mysql"
                 image: mysql
+                volumeMounts:
+                - mountPath: "/var/lib/mysql"
+                  name: "{{ application_name }}"
                 env:
                 - name: MYSQL_ROOT_PASSWORD
                   value: password
