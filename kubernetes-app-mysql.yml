@@ -8,8 +8,61 @@
       cluster_id: "{{ cluster_id }}"
       message: "Starting {{ application_name }} deployment."
 
-- hosts: all  
-  tasks: 
+  - name: Fetch storage configuration.
+    kube_cluster_storage_get:
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      storage_id: "{{ storage_id }}"
+    register: storage
+      
+  - name: Add gcfs server to in-memory inventory.
+    add_host:
+      name={{ storage.content.name }}
+      ansible_ssh_host={{ storage.content.storage_ip }}
+      ansible_ssh_user={{ storage.content.storage_ssh_user }}
+      ansible_ssh_pass={{ storage.content.storage_ssh_pass }}
+      gcfs_ip={{ storage.content.storage_ip }}
+      volume_name={{ application_name }}
+      volume_path=/{{ application_name }}
+      groups=gcfs
+      
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "Storage volume created for {{ application_name }}."
+      
+- hosts: gcfs
+  roles:
+    - gluster-volume
+    
+- hosts: "all:!gcfs" 
+  tasks:
+  - name: Fetch storage configuration.
+    kube_cluster_storage_get:
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      storage_id: "{{ storage_id }}"
+    register: storage
+  
+  - name: Create GCFS Endpoint
+    kubernetes:
+      endpoint: "{{ apiserver_endpoint }}"
+      state: present
+      model:
+        apiVersion: v1
+        kind: Endpoints
+        metadata:
+          name: "{{ application_name }}"
+        subsets:
+          - addresses:
+            - ip: "{{ storage.content.storage_ip }}"
+            ports:
+            - port: 24007
+
   - name: Create mysql Replication Controller.
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
@@ -50,7 +103,7 @@
       cluster_id: "{{ cluster_id }}"
       message: "{{ application_name }} replication controller created."
 
-- hosts: all  
+- hosts: "all:!gcfs"  
   tasks: 
   - name: Create mysql Service
     kubernetes:
@@ -74,8 +127,6 @@
           selector:
             app: "{{ application_name }}"
     register: service_resp
-            
-  - debug: msg={{ service_resp }}
 
 - hosts: localhost
   connection: local
