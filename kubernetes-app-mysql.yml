@@ -146,7 +146,6 @@
           - port: 3306
             targetPort: 3306
             protocol: TCP
-            nodePort: 30306
           selector:
             app: "{{ application_name }}"
     register: service_resp
