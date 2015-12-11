@@ -112,6 +112,9 @@
                   value: password
                 - name: DATADIR
                   value: "/var/lib/mysql/data"
+                command:
+                - "sleep"
+                - "900000"
                 ports:
                 - containerPort: 3306
             restartPolicy: Always
