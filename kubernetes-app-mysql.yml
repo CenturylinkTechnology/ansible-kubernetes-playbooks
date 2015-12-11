@@ -57,6 +57,7 @@
         kind: Endpoints
         metadata:
           name: "{{ application_name }}"
+          namespace: default
         subsets:
           - addresses:
             - ip: "{{ storage.content.storage_ip }}"
