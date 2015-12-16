@@ -74,7 +74,7 @@
       cluster_app_id: "{{ cluster_app_id }}"
       patch:
         ports:
-        - port: "{{ service_response.content.spec.ports[0].nodePort }}" 
+        - port: "{{ service_resp.content.spec.ports[0].nodePort }}" 
 
   - name: Publish kube cluster event.
     kube_cluster_event:
