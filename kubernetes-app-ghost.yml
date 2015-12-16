@@ -3,13 +3,12 @@
   tasks:
   - name: Publish kube cluster event.
     kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
       message: "Starting {{ application_name }} deployment."  
   
-- hosts: all  
-  tasks:
   - name: Create Ghost Replication Controller.
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
@@ -37,18 +36,14 @@
                 - containerPort: 2368
             restartPolicy: Always
 
-- hosts: localhost
-  connection: local
-  tasks:    
   - name: Publish kube cluster event.
     kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
       message: "{{ application_name }} replication controller created."
 
-- hosts: all  
-  tasks:            
   - name: Create Ghost Service
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
@@ -70,14 +65,21 @@
           selector:
             app: "{{ application_name }}"
     register: service_resp
-            
-  - debug: msg={{ service_resp }}
 
-- hosts: localhost
-  connection: local
-  tasks:            
+  - name: Update the stored cluster app configuration.
+    kube_cluster_app_patch:
+      endpoint: "{{ services_endpoint }}"
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      cluster_app_id: "{{ cluster_app_id }}"
+      patch:
+        ports:
+        - port: "{{ service_response.content.spec.ports[0].nodePort }}" 
+
   - name: Publish kube cluster event.
     kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"

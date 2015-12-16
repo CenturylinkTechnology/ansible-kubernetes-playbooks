@@ -9,8 +9,6 @@
       cluster_id: "{{ cluster_id }}"
       message: "Deleting {{ application_name }}."  
   
-- hosts: all  
-  tasks:
   - name: Scale Down Pods
     kubernetes-scale:
       endpoint: "{{ apiserver_endpoint }}"
@@ -29,9 +27,6 @@
           name: "{{ application_name }}-rc"
           namespace: default
       
-- hosts: localhost
-  connection: local
-  tasks:    
   - name: Publish kube cluster event.
     kube_cluster_event:
       endpoint: "{{ services_endpoint }}"
@@ -40,8 +35,6 @@
       cluster_id: "{{ cluster_id }}"
       message: "{{ application_name }} replication controller deleted."
 
-- hosts: all  
-  tasks:            
   - name: Delete Service
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
@@ -55,9 +48,6 @@
           labels:
             app: "{{ application_name }}"
 
-- hosts: localhost
-  connection: local
-  tasks:            
   - name: Publish kube cluster event.
     kube_cluster_event:
       endpoint: "{{ services_endpoint }}"
