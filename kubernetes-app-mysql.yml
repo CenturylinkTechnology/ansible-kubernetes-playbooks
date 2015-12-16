@@ -3,6 +3,7 @@
   tasks:
   - name: Publish kube cluster event.
     kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
@@ -10,6 +11,7 @@
 
   - name: Fetch storage configuration.
     kube_cluster_storage_get:
+      endpoint: "{{ services_endpoint }}"
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
@@ -18,6 +20,7 @@
     
   - name: Fetch cluster configuration.
     kube_cluster_get:
+      endpoint: "{{ services_endpoint }}"
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
@@ -45,16 +48,20 @@
       volume_path=/{{ application_name }}
       groups=master
       
+- hosts: gcfs
+  roles:
+    - gluster-volume
+
+- hosts: localhost
+  connection: local
+  tasks:
   - name: Publish kube cluster event.
     kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
       message: "Storage volume created for {{ application_name }}."
-      
-- hosts: gcfs
-  roles:
-    - gluster-volume
     
 - hosts: "master" 
   tasks:
@@ -74,6 +81,14 @@
             - ip: "{{ gcfs_ip }}"
             ports:
             - port: 24007
+            
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "{{ application_name }} gcfs endpoint created."
 
   - name: Create mysql Replication Controller.
     kubernetes:
@@ -116,18 +131,14 @@
                 - containerPort: 3306
             restartPolicy: Always
 
-- hosts: localhost
-  connection: local
-  tasks:
   - name: Publish kube cluster event.
     kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
       message: "{{ application_name }} replication controller created."
 
-- hosts: "master"  
-  tasks: 
   - name: Create mysql Service
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
@@ -149,12 +160,20 @@
           selector:
             app: "{{ application_name }}"
     register: service_resp
+    
+  - name: Update the stored cluster app configuration.
+    kube_cluster_app_patch:
+      endpoint: "{{ services_endpoint }}"
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      cluster_app_id: "{{ cluster_app_id }}"
+      patch:
+        port: "{{ service_resp.content.spec.ports[0].nodePort }}"
 
-- hosts: localhost
-  connection: local
-  tasks:
   - name: Publish kube cluster event.
     kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
