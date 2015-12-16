@@ -68,7 +68,7 @@
         authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
-        message: "Node instance created."
+        message: "Node instance created with {{ node_ip }}."
 
     - name: Wait for SSH services be vailable on hosts.
       command: sleep 30
