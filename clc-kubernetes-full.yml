@@ -3,6 +3,7 @@
   
     - name: Publish kube cluster event.
       kube_cluster_event:
+        endpoint: "{{ services_endpoint }}"
         authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
@@ -55,6 +56,7 @@
 
     - name: Update the stored cluster configuration.
       kube_cluster_patch:
+        endpoint: "{{ services_endpoint }}"
         authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
@@ -65,6 +67,7 @@
       
     - name: Publish kube cluster event.
       kube_cluster_event:
+        endpoint: "{{ services_endpoint }}"
         authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
@@ -100,6 +103,7 @@
       
     - name: Create node configuration documents.
       kube_cluster_node_create:
+        endpoint: "{{ services_endpoint }}"
         authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
@@ -112,10 +116,12 @@
       
     - name: Publish kube cluster event.
       kube_cluster_event:
+        endpoint: "{{ services_endpoint }}"
         authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
-        message: "Node server instance(s) created."
+        message: "Node server instance created with IP {{ item.ipaddress }}."
+      with_items: new_inv_node.servers
     
     - name: Wait for SSH services be vailable on hosts.
       command: sleep 30
