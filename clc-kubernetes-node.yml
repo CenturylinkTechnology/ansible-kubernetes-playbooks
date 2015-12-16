@@ -3,6 +3,7 @@
   
     - name: Publish kube cluster event.
       kube_cluster_event:
+        endpoint: "{{ services_endpoint }}"
         authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
@@ -50,6 +51,7 @@
 
     - name: Update node configuration document.
       kube_cluster_node_patch:
+        endpoint: "{{ services_endpoint }}"
         authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
@@ -62,6 +64,7 @@
 
     - name: Publish kube cluster event.
       kube_cluster_event:
+        endpoint: "{{ services_endpoint }}"
         authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
