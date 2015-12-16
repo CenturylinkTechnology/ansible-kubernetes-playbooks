@@ -62,6 +62,14 @@
           storage_ip: "{{ storage_ip }}"
           storage_ssh_user: "root"
           storage_ssh_pass: "{{ server_pass }}"
+          
+    - name: Publish kube cluster event.
+      kube_cluster_event:
+        endpoint: "{{ services_endpoint }}"
+        authorization: "{{ authorization }}"
+        account_alias: "{{ account_alias }}"
+        cluster_id: "{{ cluster_id }}"
+        message: "Storage instance created with {{ storage_ip }}."
       
     - name: Wait for SSH services be vailable on hosts.
       command: sleep 30
