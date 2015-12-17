@@ -128,3 +128,69 @@
 
 - include: kubernetes-master.yml
 - include: kubernetes-node.yml
+
+- hosts: master
+  tasks:
+  - name: Create Replication Controller - cluster dns
+    kubernetes:
+      endpoint: "{{ apiserver_endpoint }}"
+      state: present
+      model:
+        apiVersion: v1
+        kind: ReplicationController
+        metadata:
+          name: dns-rc
+          namespace: default
+        spec:
+          replicas: 1
+          imagePullPolicy: IfNotPresent
+          selector:
+            app: dns
+          template:
+            metadata:
+              labels:
+                app: dns
+            spec:
+              containers:
+              - name: etcd
+                image: quay.io/coreos/etcd:v2.2.2
+                args:
+                - -listen-client-urls
+                - http://0.0.0.0:2379,http://0.0.0.0:4001
+                - -advertise-client-urls 
+                - http://127.0.0.0:2379,http://127.0.0.1:4001
+              - name: skydns
+                image: skynetservices/skydns:2.5.3a
+                args:
+                - -addr=0.0.0.0:53
+                - -hostmaster=mark.ramach@ctl.io
+                - -machines=http://127.0.0.1:4001
+                - -rcache=0
+                - -rcache-ttl=0
+                - -verbose=true
+              - name: kube2sky
+                image: markramach/kube2sky:latest
+            restartPolicy: Always
+  
+  - name: Create Service With Node Port - cluster dns
+    kubernetes:
+      endpoint: "{{ apiserver_endpoint }}"
+      state: present
+      model:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: dns
+          namespace: default
+          labels:
+            app: dns
+        spec:
+          type: NodePort
+          ports:
+          - port: 53
+            targetPort: 53
+            protocol: UDP
+            nodePort: 30053
+          clusterIP: 192.168.253.2
+          selector:
+            app: dns
