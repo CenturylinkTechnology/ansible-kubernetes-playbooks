@@ -1,2 +1,4 @@
 apiserver_endpoint: http://127.0.0.1:4001
 allow_privileged: true
+cluster_dns: 192.168.253.2
+cluster_domain: "skydns.local"
