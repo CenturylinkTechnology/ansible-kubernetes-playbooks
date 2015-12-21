@@ -51,7 +51,8 @@
                 - "{{ application_name }}-cluster"
                 - -initial-cluster 
                 - "{{ application_name }}-node-1=http://{{ application_name }}-node-1.cluster.service.skydns.local:2380"
-                - -initial-cluster-state new
+                - -initial-cluster-state
+                - new
             restartPolicy: Always
 
   - name: Publish kube cluster event.
