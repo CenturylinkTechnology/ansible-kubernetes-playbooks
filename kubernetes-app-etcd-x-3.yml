@@ -257,9 +257,9 @@
           labels:
             app: "{{ application_name }}"
         spec:
+          type: NodePort
           ports:
-          - type: NodePort
-            port: 4001
+          - port: 4001
             targetPort: 4001
             protocol: TCP
           selector:
