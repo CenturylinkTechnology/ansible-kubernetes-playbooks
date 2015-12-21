@@ -109,6 +109,19 @@
           labels:
             app: "{{ application_name }}"
 
+  - name: Delete Service
+    kubernetes:
+      endpoint: "{{ apiserver_endpoint }}"
+      state: absent
+      model:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: "{{ application_name }}"
+          namespace: default
+          labels:
+            app: "{{ application_name }}"
+
   - name: Publish kube cluster event.
     kube_cluster_event:
       endpoint: "{{ services_endpoint }}"
