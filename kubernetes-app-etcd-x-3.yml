@@ -22,7 +22,7 @@
           replicas: 1
           imagePullPolicy: IfNotPresent
           selector:
-            app: "{{ application_name }}"
+            node: "{{ application_name }}-node-1"
           template:
             metadata:
               labels:
@@ -69,7 +69,7 @@
           replicas: 1
           imagePullPolicy: IfNotPresent
           selector:
-            app: "{{ application_name }}"
+            node: "{{ application_name }}-node-2"
           template:
             metadata:
               labels:
@@ -116,7 +116,7 @@
           replicas: 1
           imagePullPolicy: IfNotPresent
           selector:
-            app: "{{ application_name }}"
+            node: "{{ application_name }}-node-3"
           template:
             metadata:
               labels:
