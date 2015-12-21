@@ -16,7 +16,7 @@
         apiVersion: v1
         kind: ReplicationController
         metadata:
-          name: "{{ application_name }}-rc"
+          name: "{{ application_name }}-node-1-rc"
           namespace: default
         spec:
           replicas: 1
