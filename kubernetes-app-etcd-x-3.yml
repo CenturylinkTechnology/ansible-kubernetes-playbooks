@@ -8,7 +8,7 @@
       cluster_id: "{{ cluster_id }}"
       message: "Starting {{ application_name }} deployment."  
   
-  - name: Create etcd Light Replication Controller.
+  - name: Create etcd node-1 Replication Controller.
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
       state: present
@@ -30,7 +30,7 @@
                 node: "{{ application_name }}-node-1"
             spec:
               containers:
-              - name: "etcd"
+              - name: "etcd-node-1"
                 image: quay.io/coreos/etcd:v2.2.2
                 ports:
                 - containerPort: 4001
@@ -50,20 +50,115 @@
                 - -initial-cluster-token 
                 - "{{ application_name }}-cluster"
                 - -initial-cluster 
-                - "{{ application_name }}-node-1=http://{{ application_name }}-node-1.cluster.service.skydns.local:2380"
+                - "{{ application_name }}-node-1=http://{{ application_name }}-node-1.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380,{{ application_name }}-node-3=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380"
                 - -initial-cluster-state
                 - new
             restartPolicy: Always
 
+  - name: Create etcd node-2 Replication Controller.
+    kubernetes:
+      endpoint: "{{ apiserver_endpoint }}"
+      state: present
+      model:
+        apiVersion: v1
+        kind: ReplicationController
+        metadata:
+          name: "{{ application_name }}-node-2-rc"
+          namespace: default
+        spec:
+          replicas: 1
+          imagePullPolicy: IfNotPresent
+          selector:
+            app: "{{ application_name }}"
+          template:
+            metadata:
+              labels:
+                app: "{{ application_name }}"
+                node: "{{ application_name }}-node-2"
+            spec:
+              containers:
+              - name: "etcd-node-2"
+                image: quay.io/coreos/etcd:v2.2.2
+                ports:
+                - containerPort: 4001
+                - containerPort: 2380
+                - containerPort: 2379
+                args:
+                - -name 
+                - "{{ application_name }}-node-2"
+                - -listen-client-urls
+                - http://0.0.0.0:2379,http://0.0.0.0:4001
+                - -advertise-client-urls 
+                - http://{{ application_name }}-node-2.cluster.service.skydns.local:2379,http://{{ application_name }}-node-2.cluster.service.skydns.local:4001
+                - -initial-advertise-peer-urls 
+                - http://{{ application_name }}-node-2.cluster.service.skydns.local:2380
+                - -listen-peer-urls
+                - http://0.0.0.0:2380
+                - -initial-cluster-token 
+                - "{{ application_name }}-cluster"
+                - -initial-cluster 
+                - "{{ application_name }}-node-1=http://{{ application_name }}-node-1.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380,{{ application_name }}-node-3=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380"
+                - -initial-cluster-state
+                - new
+            restartPolicy: Always
+            
+  - name: Create etcd node-3 Replication Controller.
+    kubernetes:
+      endpoint: "{{ apiserver_endpoint }}"
+      state: present
+      model:
+        apiVersion: v1
+        kind: ReplicationController
+        metadata:
+          name: "{{ application_name }}-node-3-rc"
+          namespace: default
+        spec:
+          replicas: 1
+          imagePullPolicy: IfNotPresent
+          selector:
+            app: "{{ application_name }}"
+          template:
+            metadata:
+              labels:
+                app: "{{ application_name }}"
+                node: "{{ application_name }}-node-3"
+            spec:
+              containers:
+              - name: "etcd-node-3"
+                image: quay.io/coreos/etcd:v2.2.2
+                ports:
+                - containerPort: 4001
+                - containerPort: 2380
+                - containerPort: 2379
+                args:
+                - -name 
+                - "{{ application_name }}-node-3"
+                - -listen-client-urls
+                - http://0.0.0.0:2379,http://0.0.0.0:4001
+                - -advertise-client-urls 
+                - http://{{ application_name }}-node-3.cluster.service.skydns.local:2379,http://{{ application_name }}-node-3.cluster.service.skydns.local:4001
+                - -initial-advertise-peer-urls 
+                - http://{{ application_name }}-node-3.cluster.service.skydns.local:2380
+                - -listen-peer-urls
+                - http://0.0.0.0:2380
+                - -initial-cluster-token 
+                - "{{ application_name }}-cluster"
+                - -initial-cluster 
+                - "{{ application_name }}-node-1=http://{{ application_name }}-node-1.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380,{{ application_name }}-node-3=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380"
+                - -initial-cluster-state
+                - new
+            restartPolicy: Always      
+            
   - name: Publish kube cluster event.
     kube_cluster_event:
       endpoint: "{{ services_endpoint }}"
       authorization: "{{ authorization }}"
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
-      message: "{{ application_name }} replication controller created."
+      message: "{{ application_name }} node replication controllers created."
 
-  - name: Create etcd Service
+
+  - name: Create etcd node-1 Service
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
       state: present
@@ -88,6 +183,66 @@
           selector:
             node: "{{ application_name }}-node-1"
     register: service_resp
+    
+  - name: Create etcd node-2 Service
+    kubernetes:
+      endpoint: "{{ apiserver_endpoint }}"
+      state: present
+      model:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: "{{ application_name }}-node-2"
+          namespace: default
+          labels:
+            app: "{{ application_name }}"
+        spec:
+          ports:
+          - name: client
+            port: 4001
+            targetPort: 4001
+            protocol: TCP
+          - name: peer
+            port: 2380
+            targetPort: 2380
+            protocol: TCP
+          selector:
+            node: "{{ application_name }}-node-2"
+    register: service_resp
+    
+  - name: Create etcd node-3 Service
+    kubernetes:
+      endpoint: "{{ apiserver_endpoint }}"
+      state: present
+      model:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: "{{ application_name }}-node-3"
+          namespace: default
+          labels:
+            app: "{{ application_name }}"
+        spec:
+          ports:
+          - name: client
+            port: 4001
+            targetPort: 4001
+            protocol: TCP
+          - name: peer
+            port: 2380
+            targetPort: 2380
+            protocol: TCP
+          selector:
+            node: "{{ application_name }}-node-3"
+    register: service_resp
+    
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "{{ application_name }} cluster node services created."
 
 #  - name: Update the stored cluster app configuration.
 #    kube_cluster_app_patch:
