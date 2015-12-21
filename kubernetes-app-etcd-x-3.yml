@@ -50,7 +50,7 @@
                 - -initial-cluster-token 
                 - "{{ application_name }}-cluster"
                 - -initial-cluster 
-                - "{{ application_name }}-node-1=http://{{ application_name }}-node-1.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380,{{ application_name }}-node-3=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380"
+                - "{{ application_name }}-node-1=http://{{ application_name }}-node-1.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380,{{ application_name }}-node-3=http://{{ application_name }}-node-3.cluster.service.skydns.local:2380"
                 - -initial-cluster-state
                 - new
             restartPolicy: Always
@@ -97,7 +97,7 @@
                 - -initial-cluster-token 
                 - "{{ application_name }}-cluster"
                 - -initial-cluster 
-                - "{{ application_name }}-node-1=http://{{ application_name }}-node-1.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380,{{ application_name }}-node-3=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380"
+                - "{{ application_name }}-node-1=http://{{ application_name }}-node-1.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380,{{ application_name }}-node-3=http://{{ application_name }}-node-3.cluster.service.skydns.local:2380"
                 - -initial-cluster-state
                 - new
             restartPolicy: Always
@@ -144,7 +144,7 @@
                 - -initial-cluster-token 
                 - "{{ application_name }}-cluster"
                 - -initial-cluster 
-                - "{{ application_name }}-node-1=http://{{ application_name }}-node-1.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380,{{ application_name }}-node-3=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380"
+                - "{{ application_name }}-node-1=http://{{ application_name }}-node-1.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ application_name }}-node-2.cluster.service.skydns.local:2380,{{ application_name }}-node-3=http://{{ application_name }}-node-3.cluster.service.skydns.local:2380"
                 - -initial-cluster-state
                 - new
             restartPolicy: Always      
