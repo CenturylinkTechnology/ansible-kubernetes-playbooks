@@ -140,15 +140,15 @@
                 - -listen-client-urls
                 - http://0.0.0.0:2379,http://0.0.0.0:4001
                 - -advertise-client-urls 
-                - http://{{ service_resp_n1.content.spec.clusterIP}}:2379,http://{{ service_resp_n1.content.spec.clusterIP}}:4001
+                - http://{{ application_name }}-node-1.cluster.service.skydns.local:2379,http://{{ application_name }}-node-1.cluster.service.skydns.local:4001
                 - -initial-advertise-peer-urls 
-                - http://{{ service_resp_n1.content.spec.clusterIP}}:2380
+                - http://{{ application_name }}-node-1.cluster.service.skydns.local:2380
                 - -listen-peer-urls
                 - http://0.0.0.0:2380
                 - -initial-cluster-token 
                 - "{{ application_name }}-cluster"
                 - -initial-cluster 
-                - "{{ application_name }}-node-1=http://{{ application_name }}.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ service_resp_n2.content.spec.clusterIP}}:2380,{{ application_name }}-node-3=http://{{ service_resp_n3.content.spec.clusterIP}}:2380"
+                - "{{ application_name }}-node-1=http://{{ application_name }}-node-1.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ service_resp_n2.content.spec.clusterIP}}:2380,{{ application_name }}-node-3=http://{{ service_resp_n3.content.spec.clusterIP}}:2380"
                 - -initial-cluster-state
                 - new
             restartPolicy: Always
@@ -195,7 +195,7 @@
                 - -initial-cluster-token 
                 - "{{ application_name }}-cluster"
                 - -initial-cluster 
-                - "{{ application_name }}-node-1=http://{{ application_name }}.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ service_resp_n2.content.spec.clusterIP}}:2380,{{ application_name }}-node-3=http://{{ service_resp_n3.content.spec.clusterIP}}:2380"
+                - "{{ application_name }}-node-1=http://{{ application_name }}-node-1.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ service_resp_n2.content.spec.clusterIP}}:2380,{{ application_name }}-node-3=http://{{ service_resp_n3.content.spec.clusterIP}}:2380"
                 - -initial-cluster-state
                 - new
             restartPolicy: Always
@@ -242,7 +242,7 @@
                 - -initial-cluster-token 
                 - "{{ application_name }}-cluster"
                 - -initial-cluster 
-                - "{{ application_name }}-node-1=http://{{ application_name }}.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ service_resp_n2.content.spec.clusterIP}}:2380,{{ application_name }}-node-3=http://{{ service_resp_n3.content.spec.clusterIP}}:2380"
+                - "{{ application_name }}-node-1=http://{{ application_name }}-node-1.cluster.service.skydns.local:2380,{{ application_name }}-node-2=http://{{ service_resp_n2.content.spec.clusterIP}}:2380,{{ application_name }}-node-3=http://{{ service_resp_n3.content.spec.clusterIP}}:2380"
                 - -initial-cluster-state
                 - new
             restartPolicy: Always      
