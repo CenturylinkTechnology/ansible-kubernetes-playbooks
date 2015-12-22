@@ -38,6 +38,8 @@
                 args:
                 - -server
                 - -bootstrap
+                - -advertise
+                - 0.0.0.0
                 - -ui-dir
                 - /ui
             restartPolicy: Always
@@ -65,18 +67,10 @@
         spec:
           type: NodePort
           ports:
-          - name: cluster
-            port: 8400
-            targetPort: 8400
-            protocol: TCP
           - name: api
             port: 8500
             targetPort: 8500
             protocol: TCP
-          - name: dns
-            port: 53
-            targetPort: 53
-            protocol: UDP
           selector:
             app: "{{ application_name }}"
     register: service_resp
