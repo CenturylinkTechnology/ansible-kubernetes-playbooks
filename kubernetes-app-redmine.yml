@@ -43,7 +43,7 @@
                 env:
                 - name: MYSQL_PORT_3306_TCP_PORT
                   value: "3306"
-                - name: MYSQL_PORT_3306_TCP
+                - name: MYSQL_PORT_3306_TCP_ADDR
                   value: 127.0.0.1
                 - name: MYSQL_ENV_MYSQL_USER
                   value: root
