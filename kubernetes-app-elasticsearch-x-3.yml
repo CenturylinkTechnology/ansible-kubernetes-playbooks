@@ -8,7 +8,7 @@
       cluster_id: "{{ cluster_id }}"
       message: "Starting {{ application_name }} deployment."  
 
-  - name: Create elasticsearch Service
+  - name: Create elasticsearch discovery service.
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
       state: present
@@ -22,9 +22,6 @@
             app: "{{ application_name }}"
         spec:
           ports:
-          - name: http
-            port: 9200
-            protocol: TCP
           - name: transport
             port: 9300
             protocol: TCP
@@ -110,7 +107,7 @@
       cluster_id: "{{ cluster_id }}"
       message: "{{ application_name }} replication controller created."
 
-  - name: Create elasticsearch Service
+  - name: Create elasticsearch client service.
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
       state: present
