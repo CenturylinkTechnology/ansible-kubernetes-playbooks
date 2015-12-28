@@ -1,0 +1,110 @@
+- hosts: all
+  tasks:
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "Starting {{ application_name }} deployment."  
+  
+  - name: Create elasticseach Replication Controller.
+    kubernetes:
+      endpoint: "{{ apiserver_endpoint }}"
+      state: present
+      model:
+        apiVersion: v1
+        kind: ReplicationController
+        metadata:
+          name: "{{ application_name }}-rc"
+          namespace: default
+        spec:
+          replicas: 1
+          imagePullPolicy: IfNotPresent
+          selector:
+            app: "{{ application_name }}"
+          template:
+            metadata:
+              labels:
+                app: "{{ application_name }}"
+            spec:
+              containers:
+              - name: "elasticsearch"
+                image: quay.io/pires/docker-elasticsearch-kubernetes:2.1.0
+                securityContext:
+                  capabilities:
+                    add:
+                    - IPC_LOCK
+                ports:
+                - containerPort: 9200
+                  name: http
+                  protocol: TCP
+                - containerPort: 9300
+                  name: transport
+                  protocol: TCP
+                env:
+                - name: KUBERNETES_CA_CERTIFICATE_FILE
+                  value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                - name: NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                - name: "CLUSTER_NAME"
+                  value: "{{ application_name }}"
+                - name: "DISCOVERY_SERVICE"
+                  value: "elasticsearch"
+                - name: NODE_MASTER
+                  value: "true"
+                - name: NODE_DATA
+                  value: "true"
+                - name: HTTP_ENABLE
+                  value: "true"
+            restartPolicy: Always
+
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "{{ application_name }} replication controller created."
+
+  - name: Create elasticsearch Service
+    kubernetes:
+      endpoint: "{{ apiserver_endpoint }}"
+      state: present
+      model:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: "{{ application_name }}"
+          namespace: default
+          labels:
+            app: "{{ application_name }}"
+        spec:
+          type: NodePort
+          ports:
+          - port: 9200
+            targetPort: 9200
+            protocol: TCP
+          selector:
+            app: "{{ application_name }}"
+    register: service_resp
+
+  - name: Update the stored cluster app configuration.
+    kube_cluster_app_patch:
+      endpoint: "{{ services_endpoint }}"
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      cluster_app_id: "{{ cluster_app_id }}"
+      patch:
+        port: "{{ service_resp.content.spec.ports[0].nodePort }}" 
+
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "{{ application_name }} service created."
