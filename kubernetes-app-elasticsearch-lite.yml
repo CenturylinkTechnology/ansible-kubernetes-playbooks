@@ -84,7 +84,7 @@
                 - name: HTTP_ENABLE
                   value: "true"
                 - name: KUBERNETES_MASTER
-                  value: "https://kubernetes.cluster.service.skydns.local"
+                  value: "http://10.121.49.18:8080"
                 - name: KUBERNETES_TRUST_CERTIFICATES
                   value: "true"
             restartPolicy: Always
