@@ -8,7 +8,7 @@
       cluster_id: "{{ cluster_id }}"
       message: "Starting {{ application_name }} deployment."
 
-  - name: Create Logstash Replication Controller.
+  - name: Create Kibana Replication Controller.
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
       state: present
@@ -29,13 +29,13 @@
                 app: "{{ application_name }}"
             spec:
               containers:
-              - name: "logstash"
-                image: logstash:2.1
-                args:
-                - -e
-                - 'input { log4j { } } output { elasticsearch { hosts => ["esdb02.cluster.service.skydns.local:9200"] } }'
+              - name: "kibana"
+                image: kibana:4.1
+                env:
+                - name: ELASTICSEARCH_URL
+                  value: "http://esdb02.cluster.service.skydns.local:9200"
                 ports:
-                - containerPort: 4560
+                - containerPort: 5601
             restartPolicy: Always
 
   - name: Publish kube cluster event.
@@ -46,7 +46,7 @@
       cluster_id: "{{ cluster_id }}"
       message: "{{ application_name }} replication controller created."
 
-  - name: Create Logstash Service
+  - name: Create Kibana Service
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
       state: present
@@ -61,8 +61,8 @@
         spec:
           type: NodePort
           ports:
-          - port: 4560
-            targetPort: 4560
+          - port: 5601
+            targetPort: 5601
             protocol: TCP
           selector:
             app: "{{ application_name }}"
