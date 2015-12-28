@@ -52,6 +52,7 @@
               labels:
                 app: "{{ application_name }}"
             spec:
+              serviceAccount: default
               containers:
               - name: "elasticsearch"
                 image: quay.io/pires/docker-elasticsearch-kubernetes:1.7.1-4
@@ -84,7 +85,7 @@
                 - name: HTTP_ENABLE
                   value: "true"
                 - name: KUBERNETES_MASTER
-                  value: "http://10.121.49.18:8080"
+                  value: "https://kubernetes.cluster.service.skydns.local"
                 - name: KUBERNETES_TRUST_CERTIFICATES
                   value: "true"
             restartPolicy: Always
