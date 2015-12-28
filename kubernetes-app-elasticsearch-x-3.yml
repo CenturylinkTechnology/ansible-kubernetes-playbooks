@@ -39,7 +39,7 @@
       account_alias: "{{ account_alias }}"
       cluster_id: "{{ cluster_id }}"
     register: cluster_info
-    
+  
   - name: Create elasticseach Replication Controller.
     kubernetes:
       endpoint: "{{ apiserver_endpoint }}"
@@ -51,7 +51,7 @@
           name: "{{ application_name }}-rc"
           namespace: default
         spec:
-          replicas: 1
+          replicas: 3
           imagePullPolicy: IfNotPresent
           selector:
             app: "{{ application_name }}"
