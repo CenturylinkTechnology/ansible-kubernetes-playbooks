@@ -28,25 +28,13 @@
               labels:
                 app: "{{ application_name }}"
             spec:
-              containers:
-              - name: "mariadb"
-                image: mariadb:5
-                env:
-                - name: MYSQL_ROOT_PASSWORD
-                  value: password
-                ports:
-                - containerPort: 3306
               - name: "phpmyadmin"
                 image: phpmyadmin/phpmyadmin:latest
                 env:
                 - name: PMA_PORT
                   value: "3306"
-                - name: PMA_HOST
-                  value: 127.0.0.1
-                - name: PMA_USER
-                  value: root
-                - name: PMA_PASSWORD
-                  value: password
+                - name: PMA_HOSTS
+                  value: "{{ pma_hosts }}"
                 ports:
                 - containerPort: 8080
             restartPolicy: Always
