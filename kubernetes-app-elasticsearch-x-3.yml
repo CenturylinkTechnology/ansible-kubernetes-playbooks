@@ -63,7 +63,7 @@
               serviceAccount: elasticsearch
               containers:
               - name: "elasticsearch"
-                image: quay.io/pires/docker-elasticsearch-kubernetes:1.7.1-4
+                image: quay.io/pires/docker-elasticsearch-kubernetes:2.1.0
                 securityContext:
                   capabilities:
                     add:
@@ -92,6 +92,8 @@
                   value: "true"
                 - name: HTTP_ENABLE
                   value: "true"
+                - name: KUBERNETES_MASTER
+                  value: "http://{{ cluster_info.content.master_ip }}:8080"
                 - name: KUBERNETES_SERVICE_HOST
                   value: "{{ cluster_info.content.master_ip }}"
                 - name: KUBERNETES_SERVICE_PORT
