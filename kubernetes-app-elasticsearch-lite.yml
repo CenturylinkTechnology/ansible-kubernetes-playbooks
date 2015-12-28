@@ -21,7 +21,6 @@
           labels:
             app: "{{ application_name }}"
         spec:
-          type: NodePort
           ports:
           - name: http
             port: 9200
@@ -34,16 +33,6 @@
           selector:
             app: "{{ application_name }}"
     register: service_resp
-
-  - name: Update the stored cluster app configuration.
-    kube_cluster_app_patch:
-      endpoint: "{{ services_endpoint }}"
-      authorization: "{{ authorization }}"
-      account_alias: "{{ account_alias }}"
-      cluster_id: "{{ cluster_id }}"
-      cluster_app_id: "{{ cluster_app_id }}"
-      patch:
-        port: "{{ service_resp.content.spec.ports[0].nodePort }}"
   
   - name: Create elasticseach Replication Controller.
     kubernetes:
