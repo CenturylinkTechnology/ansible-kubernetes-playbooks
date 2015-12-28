@@ -33,7 +33,7 @@
                 image: kibana:4.1
                 env:
                 - name: ELASTICSEARCH_URL
-                  value: "http://esdb02.cluster.service.skydns.local:9200"
+                  value: "http://10.121.49.23:31376"
                 ports:
                 - containerPort: 5601
             restartPolicy: Always
