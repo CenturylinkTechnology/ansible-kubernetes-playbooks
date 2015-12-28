@@ -51,7 +51,7 @@
           name: "{{ application_name }}-rc"
           namespace: default
         spec:
-          replicas: 1
+          replicas: 2
           imagePullPolicy: IfNotPresent
           selector:
             app: "{{ application_name }}"
