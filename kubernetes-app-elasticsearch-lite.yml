@@ -59,10 +59,8 @@
                   value: "true"
                 - name: HTTP_ENABLE
                   value: "true"
-                - name: KUBERNETES_SERVICE_HOST
-                  value: "kubernetes.cluster.service.skydns.local"
-                - name: KUBERNETES_SERVICE_PORT
-                  value: "443"
+                - name: KUBERNETES_MASTER
+                  value: "https://kubernetes.cluster.service.skydns.local"
                 - name: KUBERNETES_TRUST_CERTIFICATES
                   value: "true"
             restartPolicy: Always
