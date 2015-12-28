@@ -1,0 +1,69 @@
+- hosts: all
+  tasks:
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "Deleting {{ application_name }}."  
+  
+  - name: Scale Down Pods
+    kubernetes-scale:
+      endpoint: "{{ apiserver_endpoint }}"
+      name: "{{ application_name }}-rc"
+      namespace: default
+      replicas: 0
+      
+  - name: Remove Replication Controller.
+    kubernetes:
+      endpoint: "{{ apiserver_endpoint }}"
+      state: absent
+      model:
+        apiVersion: v1
+        kind: ReplicationController
+        metadata:
+          name: "{{ application_name }}-rc"
+          namespace: default
+      
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "{{ application_name }} replication controller deleted."
+
+  - name: Delete Service
+    kubernetes:
+      endpoint: "{{ apiserver_endpoint }}"
+      state: absent
+      model:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: "{{ application_name }}-disco"
+          namespace: default
+          labels:
+            app: "{{ application_name }}"
+            
+  - name: Delete Service
+    kubernetes:
+      endpoint: "{{ apiserver_endpoint }}"
+      state: absent
+      model:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: "{{ application_name }}"
+          namespace: default
+          labels:
+            app: "{{ application_name }}"
+
+  - name: Publish kube cluster event.
+    kube_cluster_event:
+      endpoint: "{{ services_endpoint }}"
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      message: "{{ application_name }} services deleted."
