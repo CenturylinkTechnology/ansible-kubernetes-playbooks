@@ -24,11 +24,9 @@
           ports:
           - name: http
             port: 9200
-            targetPort: 9200
             protocol: TCP
           - name: transport
             port: 9300
-            targetPort: 9300
             protocol: TCP
           selector:
             app: "{{ application_name }}"
@@ -45,7 +43,7 @@
           name: "{{ application_name }}-rc"
           namespace: default
         spec:
-          replicas: 2
+          replicas: 3
           imagePullPolicy: IfNotPresent
           selector:
             app: "{{ application_name }}"
@@ -56,7 +54,7 @@
             spec:
               containers:
               - name: "elasticsearch"
-                image: quay.io/pires/docker-elasticsearch-kubernetes:2.1.0
+                image: quay.io/pires/docker-elasticsearch-kubernetes:1.7.1-4
                 securityContext:
                   capabilities:
                     add:
