@@ -52,7 +52,7 @@
               labels:
                 app: "{{ application_name }}"
             spec:
-              serviceAccount: default
+              serviceAccount: elasticsearch
               containers:
               - name: "elasticsearch"
                 image: quay.io/pires/docker-elasticsearch-kubernetes:1.7.1-4
