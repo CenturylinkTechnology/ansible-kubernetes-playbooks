@@ -28,6 +28,7 @@
               labels:
                 app: "{{ application_name }}"
             spec:
+              containers:
               - name: "phpmyadmin"
                 image: phpmyadmin/phpmyadmin:latest
                 env:
