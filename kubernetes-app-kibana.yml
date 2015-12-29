@@ -33,7 +33,9 @@
                 image: kibana:4.3.1
                 env:
                 - name: ELASTICSEARCH_URL
-                  value: "http://10.121.49.23:31376"
+                  value: "http://esdb02.cluster.service.skydns.local:9200"
+                - name: PING_TIMEOUT
+                  value: "5000"
                 ports:
                 - containerPort: 5601
             restartPolicy: Always
