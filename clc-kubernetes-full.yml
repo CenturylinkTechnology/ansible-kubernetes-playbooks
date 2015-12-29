@@ -81,7 +81,7 @@
         location: "{{ datacenter }}"
         template: ubuntu-14-64
         password: "{{ server_pass }}"
-        count: 4
+        count: 1
         group: "{{ group }}"
         network_id: "{{ network_id }}"
         cpu: 4
