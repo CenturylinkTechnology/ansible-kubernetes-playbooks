@@ -33,8 +33,8 @@
                 image: kibana:4.3.1
                 env:
                 - name: ELASTICSEARCH_URL
-                  value: "http://esdb02.cluster.service.skydns.local:9200"
-                - name: PING_TIMEOUT
+                  value: "http://{{ elasticsearch_host }}:{{ elasticsearch_port }}"
+                - name: ELASTICSEARCH_PING_TIMEOUT
                   value: "5000"
                 args:
                 - -q

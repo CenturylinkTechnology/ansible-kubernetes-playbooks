@@ -33,7 +33,7 @@
                 image: logstash:2.1
                 args:
                 - -e
-                - 'input { log4j { } } output { elasticsearch { hosts => ["esdb02.cluster.service.skydns.local:9200"] } }'
+                - 'input { log4j { } } output { elasticsearch { hosts => ["{{ elasticsearch_host }}:{{ elasticsearch_port }}"] } }'
                 ports:
                 - containerPort: 4560
             restartPolicy: Always
