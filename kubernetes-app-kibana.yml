@@ -36,6 +36,8 @@
                   value: "http://esdb02.cluster.service.skydns.local:9200"
                 - name: PING_TIMEOUT
                   value: "5000"
+                args:
+                - -q
                 ports:
                 - containerPort: 5601
             restartPolicy: Always
