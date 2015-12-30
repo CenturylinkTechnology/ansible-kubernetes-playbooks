@@ -95,7 +95,7 @@
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
         message: "Node server instance created with IP {{ item.ipaddress }}."
-      with_items: new_inv_node.servers
+      with_items: new_inv_master.servers
     
     - name: Wait for SSH services be vailable on hosts.
       command: sleep 30
