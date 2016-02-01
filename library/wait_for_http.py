@@ -1,5 +1,4 @@
 #!/usr/bin/python
-from ansible.runner.filter_plugins.core import changed
 
 HAS_HTTPLIB2 = True
 try:
