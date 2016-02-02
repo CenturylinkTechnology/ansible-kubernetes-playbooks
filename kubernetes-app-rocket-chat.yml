@@ -75,6 +75,21 @@
       cluster_id: "{{ cluster_id }}"
       cluster_app_id: "{{ cluster_app_id }}"
       patch:
+        installation: 50
+    
+  - name: Wait for container to become available.
+    wait_for_http:
+      endpoint: "{{ apiserver_endpoint }}/api/v1/proxy/namespaces/default/services/{{ application_name }}"
+      timeout: 360
+    
+  - name: Update the stored cluster app configuration.
+    kube_cluster_app_patch:
+      endpoint: "{{ services_endpoint }}"
+      authorization: "{{ authorization }}"
+      account_alias: "{{ account_alias }}"
+      cluster_id: "{{ cluster_id }}"
+      cluster_app_id: "{{ cluster_app_id }}"
+      patch:
         port: "{{ service_resp.content.spec.ports[0].nodePort }}"
         state: "ready"
         installation: 100
