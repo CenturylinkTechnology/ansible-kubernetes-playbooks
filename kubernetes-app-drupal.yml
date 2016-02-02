@@ -8,7 +8,8 @@
       cluster_id: "{{ cluster_id }}"
       cluster_app_id: "{{ cluster_app_id }}"
       patch:
-        state: "installing"
+        state: "install"
+        installation: 20
 
   - name: Create Drupal Replication Controller.
     kubernetes:
@@ -88,4 +89,5 @@
       cluster_app_id: "{{ cluster_app_id }}"
       patch:
         port: "{{ service_resp.content.spec.ports[0].nodePort }}"
-        state: "ready"    
+        state: "ready"
+        installation: 100
