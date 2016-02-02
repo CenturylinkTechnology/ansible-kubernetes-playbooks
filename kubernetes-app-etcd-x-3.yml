@@ -99,7 +99,7 @@
             protocol: TCP
           selector:
             node: "{{ application_name }}-node-3"
-    register: service_resp_n34
+    register: service_resp_n3
     
   - name: Update the stored cluster app configuration.
     kube_cluster_app_patch:
