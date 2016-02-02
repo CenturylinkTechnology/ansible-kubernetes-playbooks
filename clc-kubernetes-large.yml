@@ -1,13 +1,13 @@
 - hosts: localhost
   tasks:
-  
-    - name: Publish kube cluster event.
-      kube_cluster_event:
+    - name: Update the stored cluster configuration.
+      kube_cluster_patch:
         endpoint: "{{ services_endpoint }}"
         authorization: "{{ authorization }}"
         account_alias: "{{ account_alias }}"
         cluster_id: "{{ cluster_id }}"
-        message: "Starting cluster provisioning operations."
+        patch:
+          state: "install"
   
     - name: Generate server root password.
       command: openssl rand -base64 15
@@ -129,3 +129,14 @@
 - include: kubernetes-master.yml
 - include: kubernetes-node.yml
 - include: kubernetes-app-dns.yml
+
+- hosts: localhost
+  tasks:
+    - name: Update the stored cluster configuration.
+      kube_cluster_patch:
+        endpoint: "{{ services_endpoint }}"
+        authorization: "{{ authorization }}"
+        account_alias: "{{ account_alias }}"
+        cluster_id: "{{ cluster_id }}"
+        patch:
+          state: "ready"
