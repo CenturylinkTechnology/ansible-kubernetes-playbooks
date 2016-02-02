@@ -120,8 +120,8 @@
         spec:
           type: NodePort
           ports:
-          - name: http
-            port: 9200
+          - port: 9200
+            targetPort: 9200
             protocol: TCP
           selector:
             app: "{{ application_name }}"
