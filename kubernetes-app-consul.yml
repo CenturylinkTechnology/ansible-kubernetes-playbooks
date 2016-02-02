@@ -26,8 +26,7 @@
         spec:
           type: NodePort
           ports:
-          - name: api
-            port: 8500
+          - port: 8500
             targetPort: 8500
             protocol: TCP
           selector:
