@@ -73,4 +73,4 @@
       patch:
         port: "{{ service_resp.content.spec.ports[0].nodePort }}"
         state: "ready"
-        installation: 20
+        installation: 100
